@@ -62,7 +62,7 @@ async function run(){
         const updateDoc = {
           $set: {
             status: 'complete',
-            date: date
+            CompleteDate: date,
           }
         };
         const result = await todoCollection.updateOne(filter, updateDoc);
