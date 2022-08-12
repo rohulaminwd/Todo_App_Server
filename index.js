@@ -33,7 +33,6 @@ async function run(){
     app.get('/todo/:email', async (req, res) => {
       const email = req.params.email;
       const todos = await todoCollection.find({email: email}).toArray();
-      const scheduleCollection = client.db("zoomla").collection("scheduleList");
       res.send(todos);
     })
 
@@ -54,7 +53,8 @@ async function run(){
     app.post('/events', async (req, res) => {
       const events = req.body;
       const result = await scheduleCollection.insertOne(events);
-      res.send(result);
+      const data = await scheduleCollection.find().toArray();
+      res.send(data.reverse());
     })
 
     // ===== Delete method ======
