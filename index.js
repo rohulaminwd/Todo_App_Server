@@ -24,15 +24,22 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
   try{
     await client.connect();
-    const userCollection = client.db("nabojagoron").collection("users");
+
     const todoCollection = client.db("TodoApp").collection("Todos");
+    const scheduleCollection = client.db("zoomla").collection("scheduleList");
 
 
     // =====get method====
     app.get('/todo/:email', async (req, res) => {
       const email = req.params.email;
       const todos = await todoCollection.find({email: email}).toArray();
+      const scheduleCollection = client.db("zoomla").collection("scheduleList");
       res.send(todos);
+    })
+
+    app.get('/events', async (req, res) => {
+      const events = await scheduleCollection.find().toArray();
+      res.send(events.reverse());
     })
 
 
@@ -44,12 +51,25 @@ async function run(){
       res.send(result);
     })
 
+    app.post('/events', async (req, res) => {
+      const events = req.body;
+      const result = await scheduleCollection.insertOne(events);
+      res.send(result);
+    })
+
     // ===== Delete method ======
 
     app.delete('/todo/:id',  async (req, res) => {
       const id = req.params.id;
       const query = {_id: objectId(id)}
       const result = await todoCollection.deleteOne(query);
+      res.send(result);
+    })
+
+    app.delete('/events/:id',  async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: objectId(id)}
+      const result = await scheduleCollection.deleteOne(query);
       res.send(result);
     })
 
