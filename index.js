@@ -27,6 +27,7 @@ async function run(){
 
     const todoCollection = client.db("TodoApp").collection("Todos");
     const scheduleCollection = client.db("zoomla").collection("scheduleList");
+    const zoomlaFeed = client.db("zoomla").collection("FeedPost");
 
 
     // =====get method====
@@ -39,6 +40,11 @@ async function run(){
     app.get('/events', async (req, res) => {
       const events = await scheduleCollection.find().toArray();
       res.send(events.reverse());
+    })
+
+    app.get('/feedPost', async (req, res) => {
+      const feeds = await zoomlaFeed.find().toArray();
+      res.send(feeds.reverse());
     })
 
 
@@ -54,6 +60,13 @@ async function run(){
       const events = req.body;
       const result = await scheduleCollection.insertOne(events);
       const data = await scheduleCollection.find().toArray();
+      res.send(data.reverse());
+    })
+
+    app.post('/feedPost', async (req, res) => {
+      const feedPost = req.body;
+      const result = await zoomlaFeed.insertOne(feedPost);
+      const data = await zoomlaFeed.find().toArray();
       res.send(data.reverse());
     })
 
