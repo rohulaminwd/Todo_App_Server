@@ -28,6 +28,7 @@ async function run(){
     const todoCollection = client.db("TodoApp").collection("Todos");
     const scheduleCollection = client.db("zoomla").collection("scheduleList");
     const zoomlaFeed = client.db("zoomla").collection("FeedPost");
+    const zoomlaUser = client.db("zoomla").collection("users");
 
 
     // =====get method====
@@ -45,6 +46,11 @@ async function run(){
     app.get('/feedPost', async (req, res) => {
       const feeds = await zoomlaFeed.find().toArray();
       res.send(feeds.reverse());
+    })
+
+    app.get('/user', async (req, res) => {
+      const user = await zoomlaUser.find().toArray();
+      res.send(user.reverse());
     })
 
 
@@ -67,6 +73,13 @@ async function run(){
       const feedPost = req.body;
       const result = await zoomlaFeed.insertOne(feedPost);
       const data = await zoomlaFeed.find().toArray();
+      res.send(data.reverse());
+    })
+
+    app.post('/user', async (req, res) => {
+      const user = req.body;
+      const result = await zoomlaUser.insertOne(user);
+      const data = await zoomlaUser.find().toArray();
       res.send(data.reverse());
     })
 
@@ -123,6 +136,26 @@ async function run(){
         const result = await todoCollection.updateOne(filter, updateDoc);
         res.send(result)
     })
+
+    app.put('/UpdateUser/:id', async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const filter = {_id: ObjectID(id)}
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          name: data.name,
+          address: data.address,
+          phone: data.phone,
+          email: data.email,
+          img: data.img,
+          bio: data.bio
+        }
+      };
+      const result = await zoomlaUser.updateOne(filter, updateDoc, options);
+      const users = await zoomlaUser.find().toArray();
+      res.send({result, users})
+  })
 
 
   }finally{
