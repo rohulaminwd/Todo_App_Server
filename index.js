@@ -28,6 +28,7 @@ async function run(){
     const todoCollection = client.db("TodoApp").collection("Todos");
     const scheduleCollection = client.db("zoomla").collection("scheduleList");
     const zoomlaFeed = client.db("zoomla").collection("FeedPost");
+    const zoomlaStory = client.db("zoomla").collection("Story");
     const zoomlaUser = client.db("zoomla").collection("users");
 
 
@@ -46,6 +47,11 @@ async function run(){
     app.get('/feedPost', async (req, res) => {
       const feeds = await zoomlaFeed.find().toArray();
       res.send(feeds.reverse());
+    })
+
+    app.get('/story', async (req, res) => {
+      const story = await zoomlaStory.find().toArray();
+      res.send(story.reverse());
     })
 
     app.get('/user', async (req, res) => {
@@ -73,6 +79,13 @@ async function run(){
       const feedPost = req.body;
       const result = await zoomlaFeed.insertOne(feedPost);
       const data = await zoomlaFeed.find().toArray();
+      res.send(data.reverse());
+    })
+
+    app.post('/story', async (req, res) => {
+      const feedPost = req.body;
+      const result = await zoomlaStory.insertOne(feedPost);
+      const data = await zoomlaStory.find().toArray();
       res.send(data.reverse());
     })
 
