@@ -150,6 +150,52 @@ async function run(){
         res.send(result)
     })
 
+    app.put('/like/:id', async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const filter = {_id: ObjectID(id)}
+      const options = { upsert: true };
+      const updateDoc = {
+        $push: {
+          likes: data
+        }
+      };
+      const result = await zoomlaFeed.updateOne(filter, updateDoc, options);
+      const posts = await zoomlaFeed.find().toArray();
+      res.send(posts.reverse())
+  })
+
+    app.put('/comment/:id', async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const filter = {_id: ObjectID(id)}
+      const options = { upsert: true };
+      const updateDoc = {
+        $push: {
+          comments: data
+        }
+      };
+      const result = await zoomlaFeed.updateOne(filter, updateDoc, options);
+      const posts = await zoomlaFeed.find().toArray();
+      res.send(posts.reverse())
+  })
+
+    app.put('/feedPost/:id', async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const filter = {_id: ObjectID(id)}
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          img: data.img,
+          title: data.title,
+        }
+      };
+      const result = await zoomlaFeed.updateOne(filter, updateDoc, options);
+      const posts = await zoomlaFeed.find().toArray();
+      res.send(posts.reverse())
+  })
+
     app.put('/UpdateUser/:id', async (req, res) => {
       const id = req.params.id;
       const data = req.body;
